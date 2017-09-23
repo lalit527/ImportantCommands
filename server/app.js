@@ -21,6 +21,11 @@ app.use(session({
 	cookie: {secure: false}
 }));
 
+app.use(express.static(path.resolve(__dirname,'./../public')));
+
+/*app.get('/', function(req, res){
+      res.sendFile(__dirname + '../public/index.html');
+});*/
 
 var connection = require('./config/dbconnection');
 

@@ -3,7 +3,9 @@ var Schema = mongoose.Schema;
 
 var repliesSchema = new Schema({
 	
-    parent_id:{type: Number},
+    parent_id:{type: String},
+    creator: {type: String},
+    createdon: {type: Date},
     notes: {type: String},
     files:{}
 

@@ -44,6 +44,11 @@
     <div class="col-xs-12" style='margin-top: 2px;'>
         <label><b>Sort By:</b><select style='border-radius: 6px; width:100%' ng-model="dashboard.name" ng-options="x for x in dashboard.allAgent"></select></label>
     </div>
+    
+    <div class="col-xs-12 all-ticket" ng-repeat="data in dashboard.allTickets">
+    	<all-tickets></all-tickets>
+    </div>
+
   </div>
 </div>
 </div>

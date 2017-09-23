@@ -1,37 +1,24 @@
-ticketApp.controller('dashboardController', ['$http', function($http){
+ticketApp.controller('dashboardController', ['$http', 'getAllDataService', 'getAllTicketService', function($http, getAllDataService, getAllTicketService){
 	  var main = this;
-	  main.ticketData = {};
-    main.allAgent = [];
-    main.name = 'Lalit Yadav';
-      /*$http.get('http://localhost:3000/user/signup')
-           .then(function(response){
-              main.data = response;
-       });*/
+	  main.orightml = '';
+    
+    main.ticketData = {};
+    main.ticketData.description = main.orightml;
 
-      
-       main.getAllTicket = function(){
-       	  //alert('hello');
-       	  $http({
-       	  	method: 'GET',
-       	  	url   :  'http://localhost:3000/dashboard/ticket' 
-       	  })
-       	  .then(function(response){
-              console.log(response);
-           });
-       }
-
-       main.createTicket = function(){
-       	  //alert('hello');
-       	  $http({
-       	  	method: 'POST',
-       	  	url   :  'http://localhost:3000/user/login',
-       	  	data    : $.param(main.loginData),  // pass in data as strings
-            headers : { 'Content-Type': 'application/x-www-form-urlencoded' } 
-       	  })
-       	  .then(function(response){
-       	  	  alert('ok');
-              console.log(response);
-           });
-       }
+    main.createTicket = function(){
+        getAllDataService.createTicket(main.ticketData).then(function successCallback(response){
+              if(response.data.error === true){
+                 alert(response.data.message);
+                  main.loginFail = true;
+                  main.loginFailMsg = response.data.message;
+              }else{
+                  console.log(response);
+                  //$location.path('/dashboard/home');
+                  //main.loginFail = false;
+              }
+       });
+    }
+    
+   
 
 }]);

@@ -1,7 +1,7 @@
 ticketApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvider,  $urlRouterProvider){
     
 
-    //$urlRouterProvider.otherwise('/home');
+    $urlRouterProvider.otherwise('/home');
 
     $stateProvider
      .state('home', {
@@ -36,19 +36,25 @@ ticketApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvide
      .state('dashboard',{
         abstract: true,
         url: '/dashboard',
-        templateUrl     : 'views/dashboard.html'
+        templateUrl     : 'views/dashboard.html',
+        controller      : 'dashboardController',
+        controllerAs    : 'dashboard'
      })
 
      .state('dashboard.home',{
 
         url: '/home',
-        templateUrl     : 'views/dashboardhome.html'
+        templateUrl     : 'views/dashboardhome.html',
+        controller      : 'allTicketController',
+        controllerAs    : 'dashboard'
      })
 
      .state('dashboard.newticket',{
 
         url: '/newticket',
-        templateUrl     : 'views/ticket.html'
+        templateUrl     : 'views/createticket.html',
+        controller      : 'dashboardController',
+        controllerAs    : 'dashboard'
      })
     /*$stateProvider
         .when('/',{

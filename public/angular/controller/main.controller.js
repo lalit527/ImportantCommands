@@ -1,7 +1,10 @@
-ticketApp.controller('mainController', ['$http', '$state', function($http, $state){
+ticketApp.controller('mainController', ['$http', '$state', 'getAllDataService', '$location', function($http, $state, getAllDataService, $location){
 	  var main = this;
 	  main.formData = {};
 	  main.loginData = {};
+    main.showLogin = true;
+    main.loginFail = false;
+    main.loginFailMsg = '';
       /*$http.get('http://localhost:3000/user/signup')
            .then(function(response){
               main.data = response;
@@ -10,7 +13,7 @@ ticketApp.controller('mainController', ['$http', '$state', function($http, $stat
       
        main.signUp = function(){
        	  //alert('hello');
-       	  $http({
+       	  /*$http({
        	  	method: 'POST',
        	  	url   :  'http://localhost:3000/user/signup',
        	  	data    : $.param(main.formData),  // pass in data as strings
@@ -18,12 +21,15 @@ ticketApp.controller('mainController', ['$http', '$state', function($http, $stat
        	  })
        	  .then(function(response){
               console.log(response);
+           });*/
+           getAllDataService.signupUser(main.formData).then(function successCallback(response){
+                  $location.path('/dashboard/home');
            });
        }
 
        main.login = function(){
        	  //alert('hello');
-       	  $http({
+       	  /*$http({
        	  	method: 'POST',
        	  	url   :  'http://localhost:3000/user/login',
        	  	data    : $.param(main.loginData),  // pass in data as strings
@@ -32,6 +38,18 @@ ticketApp.controller('mainController', ['$http', '$state', function($http, $stat
        	  .then(function(response){
        	  	  alert('ok');
               console.log(response);
+           });*/
+           getAllDataService.loginUser(main.loginData).then(function successCallback(response){
+                  if(response.data.error === true){
+                     alert(response.data.message);
+                      main.loginFail = true;
+                      main.loginFailMsg = response.data.message;
+                  }else{
+                      console.log(response);
+                      $location.path('/dashboard/home');
+                      main.loginFail = false;
+                  }
+                  
            });
        }
 

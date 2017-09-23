@@ -2,15 +2,18 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var ticketSchema = new Schema({
-	title: {type: String},
+	requestor: {type: String},
+	subject: {type: String},
 	type: {type: String},
+    status: {type: String},
 	priority: {type: String},
 	group: {type:String},
-	requestor: {type: String},
-	agent: [],
+	source: {type: String},
+	agent: {type: String},
     description: {type: String},
-    id:{type: Number},
-    notes: {type: String}
+    ticketNum:{type: Number},
+    followers: [],
+    createdOn: {type: Date}
 
 });
 

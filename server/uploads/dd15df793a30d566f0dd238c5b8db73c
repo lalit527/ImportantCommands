@@ -1,0 +1,45 @@
+ // main document ready function to check if dom is loaded fully or not 
+ $( document ).ready(function() {
+
+    var myFacebookToken = 'Please enter your token';
+function getFacebookInfo(){ 
+                
+        myFacebookToken = $("#accesstoken").val();
+        alert('FB'+myFacebookToken);
+        $.ajax('https://graph.facebook.com/me?fields=email,name,hometown,feed.limit(10){from,message,created_time}&access_token='+myFacebookToken,{ 
+                
+                success : function(response){ 
+                    console.log(response); 
+                    console.log(typeof(response)); 
+
+                      $("#email").text(response.email); 
+                       $("#name").text(response.name);
+					    $("#hometown").text(response.hometown.name);
+						$.fee=response.feed.data;
+					    for(let i in $.fee)
+						{
+							if($.fee[i] == "Undefined")
+							{
+								$("#feed").html("<span id='feed'>"+ $.fee[i].from.name +" "+":"+ $.fee[i].from.created_time +"</span>");
+							}
+							else
+							{
+								$("#feed").html("<span id='feed'>"+ $.fee[i].from.name +" "+":"+ $.fee[i].from.message +"</span>");
+							}
+						}
+				
+                } 
+            }//end argument list 
+
+
+
+        );// end ajax call 
+
+
+    }// end get facebook info 
+
+    $("#logbtn").on('click',getFacebookInfo) 
+
+
+
+  });

@@ -6,11 +6,14 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session');
 //var auth = require("./middlewares/auth");
 var path = require ('path');
-
+var multer = require('multer');
+app.use(multer({ dest: './uploads/'}).any());
 app.use(logger('dev'));
 app.use(bodyParser.json({limit:'10mb',extended:true}));
 app.use(bodyParser.urlencoded({limit:'10mb',extended:true}));
 app.use(cookieParser());
+
+//var upload = multer({dest: 'uploads/'});
 
 app.use(session({
 	name: 'ensembleCookie',

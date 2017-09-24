@@ -109,7 +109,12 @@
 
         .ticket-div{
           height: 100px;
-          background-color: blue;
+          margin-top: 2px;
+        border: 2px solid lightgray;
+        border-radius: 10px;
+        background-color: beige;
+        font-size: 15px;
+        font-family: 'Titillium Web', sans-serif;
         }
         /* Change styles for cancel button and signup button on extra small screens */
 
@@ -120,3 +125,22 @@
             }
         }
         
+.highBg{
+  color:red;
+  font-size: 16px;
+  font-weight: bold;
+}
+.mediumBg{
+  color:#EB7A0E;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.lowBg{
+    color:blue;
+    font-size: 16px;
+  font-weight: bold;
+}
+a {
+    color: black;
+}

@@ -17,29 +17,17 @@
           </div>
           <div class="form-group required">
             <label for="input-select" class="control-label">Type</label>
-            <select class="form-control" id="input-select" ng-model = "dashboard.ticketData.type">
-              <option value="">-</option>
-              <option value="1">Question</option>
-              <option value="2">Incident</option>
-              <option value="3">Problem</option>
+            <select class="form-control" id="input-select" ng-model = "dashboard.ticketData.type" ng-options="x for x in dashboard.types">
             </select>
           </div>
           <div class="form-group required">
             <label for="input-select" class="control-label">Status</label>
-            <select class="form-control" id="input-select" ng-model = "dashboard.ticketData.status">
-              <option value="">-</option>
-              <option value="1">Open</option>
-              <option value="2">Pending</option>
-              <option value="3">Resolved</option>
+            <select class="form-control" id="input-select" ng-model = "dashboard.ticketData.status" ng-options="x for x in dashboard.status">
             </select>
           </div>
           <div class="form-group required">
             <label for="input-select" class="control-label">Priority</label>
-            <select class="form-control" id="input-select" ng-model = "dashboard.ticketData.priority">
-              <option value="">-</option>
-              <option value="1">Low</option>
-              <option value="3">Medium</option>
-              <option value="2">Critical</option>
+            <select class="form-control" id="input-select" ng-model = "dashboard.ticketData.priority" ng-options="x for x in dashboard.priority">
             </select>
           </div>
           <div class="form-group required">
@@ -48,16 +36,25 @@
               <option value="">-</option>
             </select>
           </div>
-            <div class="form-group required">
+          <div class="form-group required">
             <label for="input-money" class="control-label">Description</label>
               <div text-angular="text-angular" name="htmlcontent" ng-model="dashboard.ticketData.description" 
               ta-toolbar="[['bold','underline','italics','undo','redo', 'quote','p','pre','ul','ol', 'insertImage','insertLink','unlink']]"></div>
+          </div>
+           <div class="form-group required">
+            <label for="input-money" class="control-label">Subject</label>
+            <input type="text" class="form-control mask-money" id="input-money" placeholder="Enter your Adrress" ng-model = "dashboard.ticketData.subject">
           </div>
           <div class="form-group">
             <button type="submit" class="btn btn-primary" >Save Data</button>
             <button type="submit" class="btn btn-primary" ng-click='clear()'>Cancel</button>
           </div>
         </fieldset>
+      </form>
+      <form ng-submit='dashboard.loadFile()'>
+         <input type="file" id="file1" name="file" multiple
+            ng-files="dashboard.getTheFiles($files)">
+         <button type="submit" class="btn btn-primary">Upload</button>
       </form>
       <!-- {{htmlcontent}}
       <ng-bind-html ng-bind-html={{htmlcontent}}></ng-bind-html>

@@ -4,21 +4,21 @@ var express = require('express');
 var ticketRouter = express.Router();
 var userTicket = mongoose.model('Ticket');
 var ticketReply = mongoose.model('Reply');
-var fileUpload = mongoose.model('File');
+var ticketFile = mongoose.model('File');
 var responseGenerator = require('./../../library/responseGenerator');
 var events = require('events');
 var eventEmitter = new events.EventEmitter();
 var mailer = require('./../../library/email');
 var randomString = require('./../../library/randomString');
-
+var fileUpload = require('./../../library/file.utility');
 var fs = require('fs');
 var busboy = require('connect-busboy');
-var multer = require('multer');
-var upload = multer({dest: 'uploads/'});
+/*var multer = require('multer');
+var upload = multer({dest: 'uploads/'});*/
 var formidable = require('formidable');
 
 module.exports.controllerFunction = function(app){
-     
+     //app.use(multer({ dest: './uploads/'}))
      eventEmitter.on('send email', function(creator, subject, ticketId, text){
         /*var recepient = [];
         recepient.push('pallabidas0492@gmail.com');
@@ -72,6 +72,47 @@ module.exports.controllerFunction = function(app){
          });
     });
 
+
+    //<<<<<<<<<<<<<<<<<<Rote to get the Aggregate from Database>>>>>>>>>>>>>>>>>>>>>>>>>>///
+      ticketRouter.get('/alltickets/aggregate', function(req, res){
+         userTicket.aggregate([{$group: {_id: "$priority", count:{$sum:1}}}]).exec(function(err, result){
+            if(err){
+              console.log('An error occured while retrieving all supplier product. Error:-'+err);
+              var myResponse = responseGenerator.generate(true,"some error"+err,500,null);
+              res.send(myResponse);
+            }else{
+              res.set({
+                'Content-Type': 'application/json',
+                'ETag': '12345',
+                'Access-Control-Allow-Origin': '*'
+              });
+              res.send(result);
+            }
+         });
+
+      });
+
+
+      ticketRouter.get('/alltickets/aggregate/unassigned', function(req, res){
+          
+         userTicket.aggregate([{$group: {_id: "$priority", count:{$sum:1}}}]).aggregate([{$group: {_id: "$agent", count:{$sum:1}}}]).exec(function(err, result){
+            if(err){
+              console.log('An error occured while retrieving all supplier product. Error:-'+err);
+              var myResponse = responseGenerator.generate(true,"some error"+err,500,null);
+              res.send(myResponse);
+            }else{
+              res.set({
+                'Content-Type': 'application/json',
+                'ETag': '12345',
+                'Access-Control-Allow-Origin': '*'
+              });
+              res.send(result);
+            }
+         });
+
+      });
+    //<<<<<<<<<<<<<<<<<<Aggregate route ends here>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>///
+
     ticketRouter.get('/singletickets/:ticketId', function(req, res){
          var ticketDetail = {};
          userTicket.find({'_id': req.params.ticketId}, function(err, result){
@@ -99,43 +140,70 @@ module.exports.controllerFunction = function(app){
     
     ticketRouter.post('/file/upload/:ticketId', function(req, res){
             //var readerStream = fs.createReadStream(req.body);
-            /*var fstream;
-            req.pipe(req.busboy);
-            req.busboy.on('file', function(fieldname, file, filename){
-                console.log("Uploading: "+ filename);
-                fstream = fs.createWriteStream(__dirname+'/'+filename);
-                file.pipe(fstream);
-                fstream.on('close', function(){
-                  console.log('req'+JSON.stringify(req.busboy));
-                  res.send('ok');
-                });
-            });*/
             
-            var form = new formidable.IncomingForm();
-            form.parse(req, function(err, fields, files){
-                 var oldpath = files.filetoupload.path;
-                 var newpath = 'E:/NewBegining/Project/Project1/ensmbleGuide/server'+'/uploads/'+files.filetoupload.name;
-                 fs.rename(oldpath, newpath, function(err){
-                      if(err){
-                         res.send('error');
-                      }else{
-                        res.send('ok');
-                      }
-                 });
-            });
+            //app.use(busboy());
+            //fileUpload.fileUpload(app, req, res);
+             //console.log(req.body); // form fields
+              console.log(req.files); // form files
+              //console.log(req.file);
+              if(req.files){
+                for(var data in req.files){
+                    //data.fieldname;
+                    //console.log(data);
+                    var filePath = './uploads/'+req.files[data].filename;
+                    var fileData = new ticketFile;
+                    /*({
+                      data : fs.readFileSync(filePath),
+                      contentType : data.mimetype,
+                      parent_id: '1'
+                    });*/
+                    fileData.ticket.data = fs.readFileSync(filePath);
+                    fileData.ticket.contentType = req.files[data].mimetype;
+                    fileData.parent_id = '2';
+                    fileData.save(function(err, result){
+                       if(err){
+                          console.log('some error occured while creating product. ERR:-'+err);
+                          var myResponse = responseGenerator.generate(true,err,500,null);
+                          res.send(myResponse);
+                       }else{
+                           res.send('/file'+result);
+                       }
+                    });
+                }
+              }
+    });
 
-            //console.log('req'+JSON.stringify(req.files));
-            //res.send('ok');
+    ticketRouter.get('/files/:parentId', function(req, res){
+           ticketFile.find({'parent_id': req.params.parentId}, function(err, response){
+
+           });   
     });
 
     ticketRouter.post('/createticket', function(req, res){
 
         var followerArray = [];
+        var createDate = new Date();
+        var resolveDate = new Date();
+        var priorityDays = 2;
+        var normalDays = 3;
+        var lowDays= 4;
+        
+        //var ticketNum = autoInc.getNextSequenceValue("ticketId");
+
         followerArray.push(req.body.requestor);
         if(req.body.agent){
            followerArray.push(req.body.agent);
         }
         
+
+        if(req.body.priority == 'Critical'){
+            resolveDate.setDate(createDate.getDate() + priorityDays);
+        }else if(req.body.priority == 'Medium'){
+             resolveDate.setDate(createDate.getDate() + normalDays);
+        }else{
+             resolveDate.setDate(createDate.getDate() + lowDays);
+        }
+
         var newTicket = new userTicket({
             requestor   : req.body.requestor,
             subject     : req.body.subject,
@@ -146,9 +214,10 @@ module.exports.controllerFunction = function(app){
             source      : req.body.source,
             agent       : req.body.agent,
             description : req.body.description,
-            ticketNum   : req.body.ticketNum,
+            //ticketNum   : ticketNum,
             followers   : followerArray,
-            createdOn   : new Date()
+            createdOn   : createDate,
+            dueBy       : resolveDate
         });
         
         newTicket.save(function(err, result){

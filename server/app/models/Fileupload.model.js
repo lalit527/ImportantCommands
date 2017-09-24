@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 var repliesSchema = new Schema({
 	
-    file      :{data: Buffer, contentType: String},
+    ticket      :{data: Buffer, contentType: String},
     parent_id : {type: String}
 
 });

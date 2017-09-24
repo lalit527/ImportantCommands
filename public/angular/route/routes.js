@@ -56,6 +56,12 @@ ticketApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvide
         controller      : 'dashboardController',
         controllerAs    : 'dashboard'
      })
+
+      .state('dashboard.main',{
+
+        url: '/main',
+        templateUrl     : 'views/dashboardmain.html'
+     })
     /*$stateProvider
         .when('/',{
             // location of the template

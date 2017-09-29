@@ -14,7 +14,10 @@ ticketApp.factory('getAllTicketService', ['$http', 'getAllDataService', function
                           "status" :  response.data[indx].status,
                           "priority" :  response.data[indx].priority,
                           "agent" :  response.data[indx].agent,
-                          "description" :  response.data[indx].description
+                          "description" :  response.data[indx].description,
+                          "createdOn" : response.data[indx].createdOn,
+                          "ticketNum" : response.data[indx].ticketNum,
+                          "id" : response.data[indx]._id
                       }
 
                       main.ticketArr.push(tmpObject);

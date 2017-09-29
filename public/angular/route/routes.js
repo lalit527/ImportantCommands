@@ -1,16 +1,16 @@
 ticketApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvider,  $urlRouterProvider){
     
 
-    $urlRouterProvider.otherwise('/home');
+    //$urlRouterProvider.otherwise('/home');
 
     $stateProvider
      .state('home', {
         url: '/home',
         //template: 'hello'
         templateUrl     : 'views/landingPage.html',
-        controller      : 'mainController',
+        controller      : 'indexController',
         // what is the alias of that controller.
-        controllerAs    : 'main'
+        controllerAs    : 'index'
 
      })
 
@@ -55,6 +55,14 @@ ticketApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvide
         templateUrl     : 'views/createticket.html',
         controller      : 'dashboardController',
         controllerAs    : 'dashboard'
+     })
+
+     .state('dashboard.ticketdetail',{
+
+        url: '/ticketdetail/:ticketId',
+        templateUrl     : 'views/ticketdetail.html',
+        controller      : 'ticketDetailController',
+        controllerAs    : 'detailCntrl'
      })
 
       .state('dashboard.main',{

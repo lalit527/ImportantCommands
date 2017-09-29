@@ -1,2 +1,2 @@
-var ticketApp = angular.module('ticketApp', ['ui.router', 'textAngular', 'ngSanitize']);
+var ticketApp = angular.module('ticketApp', ['ui.router', 'textAngular', 'ngSanitize', 'ngCookies']);
 

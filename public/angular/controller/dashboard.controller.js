@@ -1,4 +1,4 @@
-ticketApp.controller('dashboardController', ['$http', 'getAllDataService', 'getAllTicketService', '$location', function($http, getAllDataService, getAllTicketService, $location){
+ticketApp.controller('dashboardController', ['$http', 'getAllDataService', 'getAllTicketService', '$location', '$cookies', 'getUserData', function($http, getAllDataService, getAllTicketService, $location, $cookies, getUserData){
 	  var main = this;
 	  main.orightml = '';
     
@@ -7,6 +7,17 @@ ticketApp.controller('dashboardController', ['$http', 'getAllDataService', 'getA
     main.types = ["Question","Incident","Problem"];
     main.status = ["Open","Pending","Resolved"];
     main.priority = ["Low","Medium","Critical"];
+    main.allAgents = [];
+    main.fileLength = 0;
+    getUserData.getAllUsers().then(function(response){
+             main.userData = response;
+             //console.log(main.userData);
+          for(var indx in main.userData){
+             //console.log(main.userData[indx]);
+               main.allAgents.push(main.userData[indx].email);
+          }
+    });
+    
 
     main.formInput = {};
 
@@ -18,7 +29,24 @@ ticketApp.controller('dashboardController', ['$http', 'getAllDataService', 'getA
                   main.loginFailMsg = response.data.message;
               }else{
                   console.log(response);
-                  $location.path('/dashboard/home');
+                  if(main.fileLength > 0){
+                     main.loadFile(response.data._id).then(function successCallback(response){
+                            if(response.data.error === true){
+                               alert(response.data.message);
+                                //main.loginFail = true;
+                                //main.loginFailMsg = response.data.message;
+                            }else{
+                                console.log(response);
+                                $location.path('/dashboard/home');
+                                //$location.path('/dashboard/home');
+                                //main.loginFail = false;
+                            };
+                      });
+                  }else{
+                    $location.path('/dashboard/home');
+                  }
+                  
+                  
                   //main.loginFail = false;
               }
        });
@@ -27,28 +55,22 @@ ticketApp.controller('dashboardController', ['$http', 'getAllDataService', 'getA
 
     var formdata = new FormData();
     main.getTheFiles = function ($files) {
+        main.fileLength = $files.length;
+        console.log('leng'+$files.length);
         angular.forEach($files, function (value, key) {
             formdata.append(key, value);
         });
     };
     
-    main.loadFile = function(){
-      $http({
+    main.loadFile = function(ticketId){
+
+      console.log(ticketId);
+      return $http({
           method: 'POST',
-          url   :  'http://localhost:3000/ticket/file/upload/1',
+          url   :  'http://localhost:3000/ticket/file/upload/'+ticketId,
           data    : formdata,  // pass in data as strings
-          headers : { 'Content-Type': undefined } 
-      }).then(function successCallback(response){
-              if(response.data.error === true){
-                 alert(response.data.message);
-                  //main.loginFail = true;
-                  //main.loginFailMsg = response.data.message;
-              }else{
-                  console.log(response);
-                  //$location.path('/dashboard/home');
-                  //main.loginFail = false;
-              };
-    });
+          headers : { 'Content-Type': undefined, 'x-auth': $cookies.get('ensembleUser-auth') } 
+      })
   }
    
 

@@ -4,10 +4,14 @@ var logger = require('morgan');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
+var currentPath = require('./library/getrootpath');
 //var auth = require("./middlewares/auth");
 var path = require ('path');
 var multer = require('multer');
+var multiparty = require('multiparty');
 app.use(multer({ dest: './uploads/'}).any());
+//app.use(express.json());
+//app.use(express.urlencoded());
 app.use(logger('dev'));
 app.use(bodyParser.json({limit:'10mb',extended:true}));
 app.use(bodyParser.urlencoded({limit:'10mb',extended:true}));
@@ -29,7 +33,7 @@ app.use(express.static(path.resolve(__dirname,'./../public')));
 /*app.get('/', function(req, res){
       res.sendFile(__dirname + '../public/index.html');
 });*/
-
+currentPath.setRootDir(path.resolve(__dirname));
 var connection = require('./config/dbconnection');
 
 var fs = require('fs');

@@ -4,47 +4,57 @@ var express = require('express');
 var userRouter = express.Router();
 var userModel = mongoose.model('User');
 var responseGenerator = require('./../../library/responseGenerator');
+var authenticate = require('./../../middlewares/authenticate');
 
 module.exports.controllerFunction = function(app){
      
-     userRouter.post('/login', function(req, res){
+
+     userRouter.get('/getallusers',  authenticate.authenticate, function(req, res){
+         userModel.find({}, function(err, result){
+              if(err){
+                 res.set({
+                        'Content-Type': 'text/plain',
+                        'Content-Length': '123',
+                        'ETag': '12345',
+                        'Access-Control-Allow-Origin': '*'
+                      }).status(404).send(err);
+              }else{
+                 res.set({
+                        'Content-Type': 'text/plain',
+                        'Content-Length': '123',
+                        'ETag': '12345',
+                        'Access-Control-Allow-Origin': '*'
+                      }).status(200).send(result);
+              }
+         });
+     });
+
+     userRouter.post('/login',  function(req, res){
      	//res.set('Content-Type', 'text/plain');
      	console.log(JSON.stringify(req.body));
-        res.set({
+        /*res.set({
 				  'Content-Type': 'text/plain',
 				  'Content-Length': '123',
 				  'ETag': '12345',
 				  'Access-Control-Allow-Origin': '*'
-				});
-        userModel.findOne({$and:[{'email':req.body.email},{'password':req.body.psw}]},function(err,foundUser){
-        	console.log('foundUser${foundUser}');
-        	console.log('foundUser'+foundUser);
-            if(err){
-                var myResponse = responseGenerator.generate(true,"some error"+err,500,null);
-                res.send(myResponse);
-            }
-            else if(foundUser==null || foundUser==undefined || foundUser.userName==undefined){
-
-                var myResponse = responseGenerator.generate(true,"user not found. Check your email and password",404,null);
-                res.send(myResponse);
-                /*res.render('error', {
-                  message: myResponse.message,
-                  error: myResponse.data
-                });*/
-
-            }
-            else{
-
-                var myResponse = responseGenerator.generate(false,"successfully logged in user",200,foundUser);
-                res.send(myResponse);
-                /*req.session.user = foundUser;
-                delete req.session.user.password;
-                res.redirect('/user/dashboard')  */
-
-            }
-
-        });// end find
-
+				});*/
+        userModel.findByCredentials(req.body.email, req.body.psw).then(function(result){
+             console.log('C'+result);
+             return result.generateAuthToken().then(function(token){
+                console.log(token);
+                res.set({
+                        'Content-Type': 'text/plain',
+                        'Content-Length': '123',
+                        'ETag': '12345',
+                        'Access-Control-Allow-Origin': '*',
+                        'x-auth': token
+                      }).send(result);
+             })
+        }).catch(function(e){
+                console.log('e'+e);
+                res.status(400).send();
+        });
+        console.log('Sync Issue');
     });
 		
 
@@ -59,31 +69,35 @@ module.exports.controllerFunction = function(app){
                 password            : req.body.psw,
                 admin               : 'Y'
             });
-          newUser.save(function(err){
+          //newUser.save().then();
+          newUser.save(function(err, result){
                 if(err){
 
                    //var myResponse = responseGenerator.generate(true,err,500,null);
-                   res.set({
-					  'Content-Type': 'text/plain',
-					  'Content-Length': '123',
-					  'ETag': '12345',
-					  'Access-Control-Allow-Origin': '*'
-					});
-                   res.send('err');
-                  
 
+                   console.log(err);
+                   res.set({
+              					  'Content-Type': 'text/plain',
+              					  'Content-Length': '123',
+              					  'ETag': '12345',
+              					  'Access-Control-Allow-Origin': '*'
+              					}).send(err);                
                 }
                 else{
-                    /*req.session.user = newUser;
-                    delete req.session.user.password;
-                    res.redirect('/user/dashboard');*/
-                    res.set({
-					  'Content-Type': 'text/plain',
-					  'Content-Length': '123',
-					  'ETag': '12345',
-					  'Access-Control-Allow-Origin': '*'
-					});
-                    res.send('ok');
+                    newUser.generateAuthToken().then(function(token){
+                         /*req.session.user = newUser;
+                          delete req.session.user.password;
+                          res.redirect('/user/dashboard');
+  */                      //newUser.generateAuthToken();
+                          res.set({
+                                    'Content-Type': 'text/plain',
+                                    'Content-Length': '123',
+                                    'ETag': '12345',
+                                    'Access-Control-Allow-Origin': '*',
+                                    'x-auth': token
+                                  }).send(result);
+                          //res.send('ok');
+                    });
                    
                 }
 

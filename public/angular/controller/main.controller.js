@@ -1,4 +1,4 @@
-ticketApp.controller('mainController', ['$http', '$state', 'getAllDataService', '$location', function($http, $state, getAllDataService, $location){
+ticketApp.controller('mainController', ['$http', '$state', 'getAllDataService', '$location', '$cookies', 'getUserData', function($http, $state, getAllDataService, $location, $cookies, getUserData){
 	  var main = this;
 	  main.formData = {};
 	  main.loginData = {};
@@ -46,6 +46,23 @@ ticketApp.controller('mainController', ['$http', '$state', 'getAllDataService', 
                       main.loginFailMsg = response.data.message;
                   }else{
                       console.log(response);
+                      var userObject = {};
+                      userObject.userName = response.data.userName;
+                      userObject.id = response.data._id;
+                      userObject.email = response.data.email;
+                      userObject.mobile = response.data.mobileNumber;
+                      userObject.auth = response.headers('x-auth');
+                      var mainObject = {
+                        currentUser: {
+                          userName : response.data.userName,
+                          id : response.data._id,
+                          email : response.data.email,
+                          mobile : response.data.mobileNumber,
+                          auth : response.headers('x-auth')
+                        }
+                      }
+                      $cookies.put('ensembleUser-auth', response.headers('x-auth'));
+                      getUserData.setUser(response.data.email, response.data.userName);
                       $location.path('/dashboard/home');
                       main.loginFail = false;
                   }

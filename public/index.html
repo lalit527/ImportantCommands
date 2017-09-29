@@ -11,11 +11,12 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ensebleGuide</title>
-   <!--  <link rel="stylesheet" href="css/bootstrap.min.css"> -->
-   <link rel='stylesheet prefetch' href='https://netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css'>
+     <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel='stylesheet prefetch' href='https://netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css'>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="css/flexslider.css">
-    <link rel="stylesheet" href="css/jquery.fancybox.css">
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/jquery.fancybox.css"> 
+    <link rel="stylesheet" href="css/main.css"> 
     <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="css/animate.min.css">
     <link rel="stylesheet" href="css/font-icon.css">
@@ -24,23 +25,39 @@
     <link href="https://fonts.googleapis.com/css?family=Droid+Sans|Titillium+Web" rel="stylesheet">
     <link rel='stylesheet prefetch' href='https://netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.min.css'>
     <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,300,700' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=Dosis|Mukta+Malar|Sedgwick+Ave+Display|Sorts+Mill+Goudy" rel="stylesheet">
     <link rel="stylesheet" href="css/custom.css">
+    <link rel="stylesheet" href="css/ticket-detail-style.css">
     <link rel="stylesheet" href="css/ticket-style.css">
 </head>
 
-<body>
+<body ng-controller="indexController as index">
     <!-- header section -->
     <!--header navigation -->
     <header id="header" class="fixed">
         <div class="header-content col-xs-12 clearfix"> <a class="logo" href="#"><img src="images/logo.png" alt=""></a>
-            <nav class="navigation">
+            <nav class="navigation" ng-show="index.showLogin">
                 <ul class="primary-nav">
                     <li><a href="#/home" data-target="#">Home</a></li>
                     <li><a href="#/signup" data-target="#signup">Signup</a></li>
                     <li><a href="#/login" data-target="#login">Login</a></li>
                 </ul>
             </nav>
-            <a href="#" class="nav-toggle">Menu<span></span></a> </div>
+            <nav class="navigation" ng-show="index.showUser">
+                <ul class="primary-nav">
+                    <!-- <li><a href="#/dashboard/home" data-target="#">Hi{{index.user.userName}}</a></li> -->
+                    <li class="dropdown">
+                      <a class="dropdown-toggle" data-toggle="dropdown">Hi {{index.user.userName}}<span class="caret"></span></a>
+                      <ul class="dropdown-menu">
+                        <li><a href="#">Home Page</a></li>
+                        <li><a href="#">Dashboard</a></li>
+                        <li><a href="#">Logout</a></li>                        
+                      </ul>
+                    </li>
+                </ul>
+
+            </nav>
+        </div>
     </header>
     <!--header navigation -->
     <!-- <nav class="navbar navbar-inverse navbar-fixed-top test" id="show-navgation">
@@ -132,28 +149,36 @@ function closeNav() {
     </footer>
     <!-- Footer section -->
     <!-- JS FILES -->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+     <script src="js/bootstrap.min.js"></script> 
     <script src="js/jquery.flexslider-min.js"></script>
     <script src="js/jquery.fancybox.pack.js"></script>
     <script src="js/retina.min.js"></script>
     <script src="js/modernizr.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
     <script src="js/main.js"></script>
-    <script src="js/custom.js"></script>
+    <!--<script src="js/custom.js"></script> -->
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script> -->
+    <script src='js/date-picker.js'></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
     <script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-sanitize.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/textAngular/1.1.2/textAngular.min.js'></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/1.0.3/angular-ui-router.min.js"></script>
+    <script src="https://code.angularjs.org/1.5.5/angular-cookies.min.js"></script>
     <script type="text/javascript" src="angular/module/mainModule.js"></script>
     <script type="text/javascript" src="angular/directives/ticket.directive.js"></script>
     <script type="text/javascript" src="angular/directives/file.directive.js"></script>
+    <script type="text/javascript" src="angular/directives/bs-tooltip.directive.js"></script>
+    <script type="text/javascript" src="angular/directives/bs-tooltip-ticket.directive.js"></script>
     <script type="text/javascript" src="angular/controller/main.controller.js"></script>
     <script type="text/javascript" src="angular/controller/dashboard.controller.js"></script>
     <script type="text/javascript" src="angular/controller/allticket.controller.js"></script>
+    <script type="text/javascript" src="angular/controller/ticketdetail.controller.js"></script>
+    <script type="text/javascript" src="angular/controller/index.controller.js"></script>
     <script type="text/javascript" src="angular/route/routes.js"></script>
-    <script type="text/javascript" src="angular/services/allRequest.js"></script>
+    <script type="text/javascript" src="angular/services/allRequest.service.js"></script>
     <script type="text/javascript" src="angular/services/allticket.service.js"></script>
-
+    <script type="text/javascript" src="angular/services/user.service.js"></script>
 </body>
 
 </html>

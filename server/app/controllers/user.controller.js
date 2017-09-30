@@ -81,7 +81,7 @@ module.exports.controllerFunction = function(app){
                 email               : req.body.email,
                 mobileNumber        : req.body.mobile,
                 password            : req.body.psw,
-                admin               : 'Y'
+                admin               : 'N'
             });
           //newUser.save().then();
           newUser.save(function(err, result){

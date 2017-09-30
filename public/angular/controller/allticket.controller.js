@@ -1,5 +1,5 @@
-ticketApp.controller('allTicketController', ['$http',  'getAllDataService', 'NgTableParams', function($http, 
- getAllDataService, NgTableParams){
+ticketApp.controller('allTicketController', ['$http',  'getAllDataService', 'NgTableParams', '$location', function($http, 
+ getAllDataService, NgTableParams, $location){
 	  var main = this;
 	
     main.allTickets = [];
@@ -50,6 +50,10 @@ ticketApp.controller('allTicketController', ['$http',  'getAllDataService', 'NgT
             });
         
     }(main.ticket);
+
+    main.goToDetail = function(id){
+        $location.path('/dashboard/ticketdetail/'+id);
+    }
     
 
     console.log('ticket'+main.allTickets);

@@ -84,7 +84,12 @@ var ticketSchema = new Schema({
 		    path:{type: String},
 		    size:{type: String}
 		}
-    ]
+    ],
+    customer:{
+    	type:  String
+    }
+
+
 
 });
 autoIncrement.initialize(mongoose.connection);

@@ -82,6 +82,38 @@ ticketApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvide
         controller      : 'mainDashboard',
         controllerAs    : 'main'
      })
+
+       .state('support',{
+             abstract: true,
+            url: '/support',
+            templateUrl     : 'views/support.html',
+            controller      : 'supportController',
+            controllerAs    : 'support'
+         })
+
+       .state('support.home',{
+
+            url: '/home',
+            templateUrl     : 'views/supporthome.html',
+            controller      : 'allSupTicketController',
+            controllerAs    : 'support'
+        })
+
+       .state('support.newticket',{
+
+            url: '/newticket',
+            templateUrl     : 'views/supticket.html',
+            controller      : 'supportController',
+            controllerAs    : 'support'
+        })
+
+       .state('support.ticketdetail',{
+
+            url: '/ticketdetail/:ticketId',
+            templateUrl     : 'views/support.ticketdetail.html',
+            controller      : 'supTicketDetailController',
+            controllerAs    : 'detailCntrl'
+         })
     /*$stateProvider
         .when('/',{
             // location of the template

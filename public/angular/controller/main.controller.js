@@ -45,7 +45,7 @@ ticketApp.controller('mainController', ['$http', '$state', 'getAllDataService', 
                   getUserData.setUser(response.data.email, response.data.userName);
                   $location.path('/dashboard/home');
                   main.loginFail = false;
-                  $location.path('/dashboard/home');
+                  $location.path('/support/home');
            });
        }
 
@@ -62,17 +62,6 @@ ticketApp.controller('mainController', ['$http', '$state', 'getAllDataService', 
        }
 
        main.login = function(){
-       	  //alert('hello');
-       	  /*$http({
-       	  	method: 'POST',
-       	  	url   :  'http://localhost:3000/user/login',
-       	  	data    : $.param(main.loginData),  // pass in data as strings
-            headers : { 'Content-Type': 'application/x-www-form-urlencoded' } 
-       	  })
-       	  .then(function(response){
-       	  	  alert('ok');
-              console.log(response);
-           });*/
            getAllDataService.loginUser(main.loginData).then(function successCallback(response){
                   if(response.data.error === true){
                      alert(response.data.message);

@@ -491,7 +491,8 @@ module.exports.controllerFunction = function(app){
             //ticketNum   : ticketNum,
             followers   : followerArray,
             createdOn   : createDate,
-            dueBy       : resolveDate
+            dueBy       : resolveDate,
+            customer    : 'N'
         });
         
         newTicket.save(function(err, result){

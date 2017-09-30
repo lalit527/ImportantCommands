@@ -56,6 +56,8 @@ userSchema.methods.generateAuthToken = function() {
 	});
 }
 
+
+
 userSchema.statics.findByToken = function(token) {
 	var user = this;
 	var decoded;
@@ -65,14 +67,6 @@ userSchema.statics.findByToken = function(token) {
          return Promise.reject();
 	}
 
-	/*return new Promise(function(resolve, reject){
-         user.findOne({
-					'_id': decoded._id,
-					'tokens.token': token,
-					'tokens.access': 'auth'
-				});
-	});*/
-
 	return user.findOne({
 		'_id': decoded._id,
 		'tokens.token': token,
@@ -81,8 +75,7 @@ userSchema.statics.findByToken = function(token) {
 }
 
 userSchema.statics.findByCredentials = function(email, password) {
-	var user = this;
-	console.log(email+'--'+password);
+	var user = this
 	return user.findOne({email}).then(function(result){
 		
         if(!result){
@@ -118,24 +111,43 @@ userSchema.statics.findByKey = function(email) {
 
 }
 
+/*userSchema.pre('save', function(next){
+    var user = this;
+    this.constructor.find({'userName': '/'+user.userName+'/d'}).count().exec(function(err, result){
+    	if(result>1){
+    		console.log('count'+result);
+           user.userName = user.userName + result;
+           next();
+        }else{
+        	console.log('un'+user.userName);
+        	next();       	
+        }
+    });
+});*/
+
 
 userSchema.pre('save', function(next){
     var user = this;
     //console.log(this);
-    if(user.isModified('password')){
 
-    	//console.log('password');
-        bcrypt.genSalt(10, function(err, salt){
-        	//console.log('err'||err);
-             bcrypt.hash(user.password, salt, function(err, hash){
-             	 //console.log('err'||err);
-                 user.password = hash;
-                 next();
-             });
-        });
-    }else{
-    	next();
-    }
+
+    
+        if(user.isModified('password')){
+
+	    	//console.log('password');
+	        bcrypt.genSalt(10, function(err, salt){
+	        	//console.log('err'||err);
+	             bcrypt.hash(user.password, salt, function(err, hash){
+	             	 //console.log('err'||err);
+	                 user.password = hash;
+	                 next();
+	             });
+	        });
+	    }else{
+	    	next();
+	    }
+    
+    
 });
 
 

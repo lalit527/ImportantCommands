@@ -24,6 +24,16 @@ ticketApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvide
 
      })
 
+     .state('signupadmin', {
+        url: '/signup/admin',
+
+        templateUrl     : 'views/signupadmin.html',
+        controller      : 'mainController',
+        // what is the alias of that controller.
+        controllerAs    : 'main'
+
+     })
+
      .state('login', {
         url: '/login',
 
@@ -68,7 +78,9 @@ ticketApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvide
       .state('dashboard.main',{
 
         url: '/main',
-        templateUrl     : 'views/dashboardmain.html'
+        templateUrl     : 'views/dashboardmain.html',
+        controller      : 'mainDashboard',
+        controllerAs    : 'main'
      })
     /*$stateProvider
         .when('/',{

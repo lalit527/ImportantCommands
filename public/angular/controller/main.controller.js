@@ -1,29 +1,63 @@
 ticketApp.controller('mainController', ['$http', '$state', 'getAllDataService', '$location', '$cookies', 'getUserData', function($http, $state, getAllDataService, $location, $cookies, getUserData){
 	  var main = this;
 	  main.formData = {};
+    main.adminData = {};
 	  main.loginData = {};
     main.showLogin = true;
     main.loginFail = false;
     main.loginFailMsg = '';
+    main.dupemail = false;
+    main.dupmobile = false;
+
       /*$http.get('http://localhost:3000/user/signup')
            .then(function(response){
               main.data = response;
        });*/
+      main.clearEmailSpan = function(){
+          main.dupemail  = false;
+      }
 
-      
+      main.checkEmail = function(){
+
+         getAllDataService.getEmailCount(main.formData.email).then(function(response){
+             if(response.data.result > 0){
+                main.dupemail  = true;
+             }
+         });
+      }
+
+      main.clearMobileSpan = function(){
+          main.dupmobile = false;
+      }
+
+      main.checkMobile = function(){
+
+         getAllDataService.getMobileCount(main.formData.mobile).then(function(response){
+             if(response.data.result > 0){
+                main.dupmobile = true;
+             }
+         });
+      }
+
        main.signUp = function(){
-       	  //alert('hello');
-       	  /*$http({
-       	  	method: 'POST',
-       	  	url   :  'http://localhost:3000/user/signup',
-       	  	data    : $.param(main.formData),  // pass in data as strings
-            headers : { 'Content-Type': 'application/x-www-form-urlencoded' } 
-       	  })
-       	  .then(function(response){
-              console.log(response);
-           });*/
            getAllDataService.signupUser(main.formData).then(function successCallback(response){
+                  $cookies.put('ensembleUser-auth', response.headers('x-auth'));
+                  getUserData.setUser(response.data.email, response.data.userName);
                   $location.path('/dashboard/home');
+                  main.loginFail = false;
+                  $location.path('/dashboard/home');
+           });
+       }
+
+       main.signupAdmin = function(){
+           getAllDataService.signupAdmin(main.adminData).then(function successCallback(response){
+                  console.log(response);
+                  $cookies.put('ensembleUser-auth', response.headers('x-auth'));
+                  getUserData.setUser(response.data.email, response.data.userName);
+                 
+                  $location.path('/dashboard/home');
+                   main.loginFail = false;
+                  
            });
        }
 

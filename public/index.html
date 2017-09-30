@@ -41,6 +41,9 @@
                     <li><a href="#/home" data-target="#">Home</a></li>
                     <li><a href="#/signup" data-target="#signup">Signup</a></li>
                     <li><a href="#/login" data-target="#login">Login</a></li>
+
+                    <li><a href="#/signup/admin" data-target="#login">Admin SignUp</a></li>
+
                 </ul>
             </nav>
             <nav class="navigation" ng-show="index.showUser">
@@ -106,7 +109,7 @@ function closeNav() {
     </script> -->
     <!--END MODAL-->
     <!-- header section -->
-    <div ui-view>
+    <div class="main-view" ui-view>
     </div>
     <!-- Footer section -->
     <footer class="footer">
@@ -119,27 +122,26 @@ function closeNav() {
                             <br> 1800 1234 56789 / 98532100987
                             <br> support@flosix.com
                         </p>
-                        <p>Copyright © 2015 Flosix Inc. All Rights Reserved. Made with <i class="fa fa-heart pulse"></i> by <a href="http://www.designstub.com/">Designstub</a></p>
+                        <p>Copyright © Edwisor.com. All Rights Reserved. Made with <i class="fa fa-heart pulse"></i> by <a href="http://www.designstub.com/">Lalit Yadav</a></p>
                     </div>
                     <div class="footer-col col-md-3">
-                        <h5>Services We Offer</h5>
+                        <h5>Other Works</h5>
                         <p>
                             <ul>
-                                <li><a href="#">Digital Strategy</a></li>
-                                <li><a href="#">Websites</a></li>
-                                <li><a href="#">Videography</a></li>
-                                <li><a href="#">Social Media</a></li>
-                                <li><a href="#">User Experience</a></li>
+                                <li><a href="#">Game Of Thrones</a></li>
+                                <li><a href="#">English Premier League</a></li>
+                                <li><a href="#">Chatting Application</a></li>
+                                <li><a href="#">Portfolio</a></li>
                             </ul>
                         </p>
                     </div>
                     <div class="footer-col col-md-3">
                         <h5>Share with Love</h5>
                         <ul class="footer-share">
-                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                            <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
-                            <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+                            <li><a href="https://www.facebook.com/lalit.yadav.944"><i class="fa fa-facebook"></i></a></li>
+                            <li><a href="https://twitter.com/lalitzz_07"><i class="fa fa-twitter"></i></a></li>
+                            <li><a href="https://www.linkedin.com/in/lalit-yadav-077486b7"><i class="fa fa-linkedin"></i></a></li>
+                            <li><a href="https://github.com/lalit527"><i class="fa fa-github"></i></a></li>
                         </ul>
                     </div>
                 </div>
@@ -165,6 +167,7 @@ function closeNav() {
     <script src='https://cdnjs.cloudflare.com/ajax/libs/textAngular/1.1.2/textAngular.min.js'></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/1.0.3/angular-ui-router.min.js"></script>
     <script src="https://code.angularjs.org/1.5.5/angular-cookies.min.js"></script>
+    <script src="https://unpkg.com/ng-table@2.0.2/bundles/ng-table.min.js"></script>
     <script type="text/javascript" src="angular/module/mainModule.js"></script>
     <script type="text/javascript" src="angular/directives/ticket.directive.js"></script>
     <script type="text/javascript" src="angular/directives/file.directive.js"></script>
@@ -172,6 +175,7 @@ function closeNav() {
     <script type="text/javascript" src="angular/directives/bs-tooltip-ticket.directive.js"></script>
     <script type="text/javascript" src="angular/controller/main.controller.js"></script>
     <script type="text/javascript" src="angular/controller/dashboard.controller.js"></script>
+    <script type="text/javascript" src="angular/controller/dashboardmain.controller.js"></script>
     <script type="text/javascript" src="angular/controller/allticket.controller.js"></script>
     <script type="text/javascript" src="angular/controller/ticketdetail.controller.js"></script>
     <script type="text/javascript" src="angular/controller/index.controller.js"></script>

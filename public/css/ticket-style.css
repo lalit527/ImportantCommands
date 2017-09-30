@@ -196,3 +196,15 @@ a { color: black; }
         color: wheat;
         cursor: pointer;
     }
+
+.left-section{
+  min-height: 400px;
+  max-height: 400px;
+  overflow-y: scroll;
+}
+.signup-div{
+  margin-top: 70px;
+}
+.main-view{
+  min-height: 700px;
+}

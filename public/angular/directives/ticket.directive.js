@@ -1,17 +1,6 @@
 ticketApp.directive("allTickets", ['$compile', '$templateRequest', '$interpolate', function ($compile, $templateRequest, $interpolate){
-   var templateUrl = 'angular/directives/templates/ticket.template.html';
-   /*return {
-   		restrict:'EA',
-        templateUrl: 'angular/directives/templates/books.template.html'
-    }*/
-    /*return function($scope, element, attr){
-    	  $templateRequest(templateUrl).then(function(html){
-                  var ele = angular.element(html);
-		          element.parent().find('ul').append(ele);
-		          $compile(ele)(scope);
-    	  });
-          
-    }*/
+   var templateUrl = 'angular/directives/templates/tickettable.template.html';
+   
     return{
     compile: function( tElement, tAttributes ) {
 

@@ -9,6 +9,7 @@
   "author": "Lalit",
   "license": "ISC",
   "dependencies": {
+    "asyn": "0.0.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.1",
     "connect-busboy": "0.0.2",

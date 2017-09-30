@@ -1,9 +1,13 @@
 'use strict'
-ticketApp.factory('getAllTicketService', ['$http', 'getAllDataService', function($http, getAllDataService) {
+ticketApp.factory('getAllTicketService', ['$q', '$http', 'getAllDataService', function($q, $http, getAllDataService) {
     var main = this; //setting the context
     main.ticketArr = [];
-    var getAllTicketData = function(){
-        getAllDataService.getAllTicket(1).then(function successCallback(response){
+    var deferred = $q.defer();
+    main.ticket = 1;
+
+    var getAllTicketData = function(ticket){
+
+        getAllDataService.getAllTicket(ticket).then(function successCallback(response){
 
                   console.log(response);
                   for(var indx in response.data){
@@ -21,17 +25,31 @@ ticketApp.factory('getAllTicketService', ['$http', 'getAllDataService', function
                       }
 
                       main.ticketArr.push(tmpObject);
-                  }
+                      if(response.headers('link')){
 
-                  console.log(response);
-                  console.log(JSON.stringify(response.headers('link')));
-                  
+                        main.ticket = response.headers('link');
+                        //return deferred.promise;    
+                      }else{
+                        main.ticket = 0;
+                        //deferred.resolve(main.ticketArr);   
+                      }
+                      
+                  }
+                  return deferred.promise;  
 
             });
-        return main.ticketArr;
+        deferred.resolve(main.ticketArr); 
 
     }
-            
+    
+/*    var getAllTicketData  = function(){
+      while(main.ticket > 0){
+              getAllTicket(main.ticket);  
+              
+      }
+      
+       return (main.ticketArr);   
+    }    */
 
     return{
        getAllTicketData: getAllTicketData

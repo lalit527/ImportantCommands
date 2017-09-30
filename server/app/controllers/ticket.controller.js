@@ -6,6 +6,7 @@ var userTicket = mongoose.model('Ticket');
 var ticketReply = mongoose.model('Reply');
 var ticketFile = mongoose.model('File');
 var userModel = mongoose.model('User');
+var userActivity = mongoose.model('Activity');
 var responseGenerator = require('./../../library/responseGenerator');
 var events = require('events');
 var eventEmitter = new events.EventEmitter();
@@ -24,6 +25,7 @@ var busboy = require('connect-busboy');
 /*var multer = require('multer');
 var upload = multer({dest: 'uploads/'});*/
 var formidable = require('formidable');
+var async = require('async');
 
 module.exports.controllerFunction = function(app){
      //app.use(multer({ dest: './uploads/'}))
@@ -40,37 +42,84 @@ module.exports.controllerFunction = function(app){
 
      eventEmitter.on('remove temp', function(file){
          if(fs.existsSync(file)){
+          try{
             fs.unlinkSync(file);
+          }catch(e){
+            console.log('some error in deleting file'+e);
+          }
          }
      });
+     
+     eventEmitter.on('save activity', function(userId, msg, ticketId){
+         async.parallel({
+             one: function(parallelcb){
+                      userModel.findOne({'_id': userId}, function(err, res){
+                         parallelcb(null, {err:err, res:res});
+                       });
+                  },
+                   
 
-     /*eventEmitter.on('add follower', function(ticketId, followers){
-           userTicket.findOneAndUpdate({'_id': ticketId}, followers, function(err, res){
-                   if(err){
-                      console.log('some error occured while assigning user '+follower.email+' to ticket:-'+ ticketId);
-                   }else{
-                      console.log('user added');
-                   }    
-           });
+              two: function(parallelcb){
+                       userTicket.findOne({'_id': ticketId}, function(err, res){
+                               parallelcb(null, {err:err, res:res});
+                         });
+                   }
+
+              
+          }, function(err, results){
+            //console.log(results);
+             var activity = new userActivity({
+                'creator.email': results.one.res.email,
+                'creator.id': results.one.res._id,
+                'creator.mobile': results.one.res.mobileNumber,
+                'creator.userName': results.one.res.userName,
+                'ticket.id': results.two.res._id,
+                'ticket.subject': results.two.res.subject,
+                'ticket.ticketnum': results.two.res.ticketNum,
+                'notes': msg,
+                'createdon': new Date()
+             });
+
+             activity.save(function(err, result){
+                 if(err){
+                    console.log(err);
+                 }else{
+                    console.log(result);
+                 }
+             });
+         });
+         
      });
-*/
-     /*ticketRouter.get('/alltickets', function(req, res){
-     	   userTicket.find({}).sort('-createdOn').limit(10).exec(function(err, result){
+    
+    ticketRouter.get('/check/test/:id', function(req, res){
+          userModel.find({'userName': req.params.id}).count().exec(function(err, result){
+            res.send({'result': result});
+          });
+    });
+
+
+    ticketRouter.get('/allacitvities/:pageNum', authenticate.authenticate, function(req, res){
+         var count = parseInt(req.params.pageNum) + 1;
+         var skipData = parseInt(req.params.pageNum) - 1;
+         skipData *=  10;  
+         userActivity.find({}).skip(skipData).sort('-createdon').limit(10).exec(function(err, result){
             if(err){
               console.log('An error occured while retrieving all supplier product. Error:-'+err);
               var myResponse = responseGenerator.generate(true,"some error"+err,500,null);
               res.send(myResponse);
             }else{
+              if(result.length === 0){
+                count = undefined;
+              }
               res.set({
                 'Content-Type': 'application/json',
                 'ETag': '12345',
                 'Access-Control-Allow-Origin': '*',
-                'link': 'id1234'
-              });
-              res.send(result);
+                'link':  count
+              }).status('200').send(result);
             }
          });
-    });*/
+    });
 
      ticketRouter.get('/alltickets/check/:pageNum', authenticate.authenticate, function(req, res){
          console.log(req.header('x-auth'));
@@ -94,10 +143,26 @@ module.exports.controllerFunction = function(app){
          });
     });
 
+      ticketRouter.get('/alltickets', authenticate.authenticate, function(req, res){
+         userTicket.find({}).sort('-createdOn').exec(function(err, result){
+            if(err){
+              console.log('An error occured while retrieving all supplier product. Error:-'+err);
+              var myResponse = responseGenerator.generate(true,"some error"+err,500,null);
+              res.send(myResponse);
+            }else{
+              res.set({
+                'Content-Type': 'application/json',
+                'ETag': '12345',
+                'Access-Control-Allow-Origin': '*'
+              }).status('200').send(result);
+            }
+         });
+    });
+
 
     //<<<<<<<<<<<<<<<<<<Rote to get the Aggregate from Database>>>>>>>>>>>>>>>>>>>>>>>>>>///
-      ticketRouter.get('/alltickets/aggregate', authenticate.authenticate, function(req, res){
-         userTicket.aggregate([{$group: {_id: "$priority", count:{$sum:1}}}]).exec(function(err, result){
+      ticketRouter.get('/alltickets/aggregate/priority', authenticate.authenticate, function(req, res){
+         userTicket.aggregate([{ $match : { status : "Open" } }, {$group: {_id: "$priority", count:{$sum:1}}}]).exec(function(err, result){
             if(err){
               console.log('An error occured while retrieving all supplier product. Error:-'+err);
               var myResponse = responseGenerator.generate(true,"some error"+err,500,null);
@@ -114,9 +179,8 @@ module.exports.controllerFunction = function(app){
       });
 
 
-      ticketRouter.get('/alltickets/aggregate/unassigned', authenticate.authenticate, function(req, res){
-          
-         userTicket.aggregate([{$group: {_id: "$priority", count:{$sum:1}}}]).aggregate([{$group: {_id: "$agent", count:{$sum:1}}}]).exec(function(err, result){
+      ticketRouter.get('/alltickets/aggregate/status', authenticate.authenticate, function(req, res){
+         userTicket.aggregate([{$group: {_id: "$status", count:{$sum:1}}}]).exec(function(err, result){
             if(err){
               console.log('An error occured while retrieving all supplier product. Error:-'+err);
               var myResponse = responseGenerator.generate(true,"some error"+err,500,null);
@@ -127,6 +191,34 @@ module.exports.controllerFunction = function(app){
                 'ETag': '12345',
                 'Access-Control-Allow-Origin': '*'
               }).status('200').send(result);
+            }
+         });
+
+      });
+
+
+      ticketRouter.get('/alltickets/aggregate/agent', authenticate.authenticate, function(req, res){
+          
+         userTicket.aggregate([{$group: {_id: "$agent", count:{$sum:1}}}]).exec(function(err, result){
+            if(err){
+              console.log('An error occured while retrieving all supplier product. Error:-'+err);
+              var myResponse = responseGenerator.generate(true,"some error"+err,500,null);
+              res.send(myResponse);
+            }else{
+
+            /*
+              data.key = 'unassigned';
+              for(var indx in result){
+                  if(result[indx]._id == null){
+                      data.value = result[indx].count;
+                  }
+              }
+              */
+              res.set({
+                'Content-Type': 'application/json',
+                'ETag': '12345',
+                'Access-Control-Allow-Origin': '*'
+              }).send(result);
             }
          });
 
@@ -140,18 +232,27 @@ module.exports.controllerFunction = function(app){
               console.log('An error occured while retrieving ticket details. Error:-'+err);
               var myResponse = responseGenerator.generate(true,"some error"+err,500,null);
               res.send(myResponse);
-            }else{
+            }else if(!result || result.length == 0 || result == undefined){
+                  console.log('An error occured while retrieving ticket details. Error:-'+err);
+                  var myResponse = responseGenerator.generate(true,"some error"+err,404,null);
+                  res.send(myResponse);
+             }else{
                  ticketFile.find({'parent_id': req.params.ticketId}, function(err, data){
                         if(err){
-                           console.log('An error occured while retrieving ticket details. Error:-'+err);
+                           console.log('An error occured whxxxile retrieving ticket details. Error:-'+err);
                           var myResponse = responseGenerator.generate(true,"some error"+err,500,null);
                           res.send(myResponse);
                           console.log(err);
+                        }else if(!data || data.length == 0 || data == undefined){
+                              /*console.log('An error occured while retrieving ticket details. Error:-'+err);
+                              var myResponse = responseGenerator.generate(true,"some error"+err,404,null);
+                              res.send(myResponse);*/
+                              res.set({
+                                'Content-Type': 'application/json',
+                                'ETag': '12345',
+                                'Access-Control-Allow-Origin': '*'
+                              }).status('200').send(result);
                         }else{
-                           allData = {
-                            'ticket': result,
-                            'files': data
-                           }
                            //console.log(data);
                            //console.log(result.attachment);
                            result.attachment = [];
@@ -173,6 +274,39 @@ module.exports.controllerFunction = function(app){
             }
          });
     });
+
+    ticketRouter.get('/alltickets/aggregate/dueBy', authenticate.authenticate, function(req, res){
+          //var data = {}
+         userTicket.aggregate([{ $match : { status : "Open" } }, {$group: {_id: {dueBy: {$dateToString:{format:"%Y-%m-%d", date: "$dueBy"}}}
+          , count:{$sum:1}}}]).exec(function(err, result){
+            if(err){
+              console.log('An error occured while retrieving all supplier product. Error:-'+err);
+              var myResponse = responseGenerator.generate(true,"some error"+err,500,null);
+              res.send(myResponse);
+            }else{
+              /*var date = new Date();
+              var year = date.getFullYear();
+              var month = date.getMonth() + 1;
+              var date = date.getDate();
+              var todayDate = year + '-' + month + '-' + date;
+
+              for(var indx in result){
+                  console.log(result[indx]._id.dueBy);
+                  console.log(todayDate);
+                  if(new Date(result[indx]._id.dueBy) > new Date(todayDate)){
+                      data.value = result[indx].count;
+                  }
+              }*/
+              
+              res.set({
+                'Content-Type': 'application/json',
+                'ETag': '12345',
+                'Access-Control-Allow-Origin': '*'
+              }).send(result);
+            }
+         });
+
+      });
     
     ticketRouter.post('/file/upload/:ticketId', authenticate.authenticate, function(req, res){
             //var readerStream = fs.createReadStream(req.body);
@@ -369,13 +503,15 @@ module.exports.controllerFunction = function(app){
 
             }
             else{
+                eventEmitter.emit('save activity', req.user._id, 'created ticket', result._id);
                  res.set({
                       'Content-Type': 'application/json',
                       'ETag': '12345',
                       'Access-Control-Allow-Origin': '*'
                     }).status('200').send(result);
-               
+                 
             }
+              
         });
 
     });
@@ -399,6 +535,18 @@ module.exports.controllerFunction = function(app){
                           'ETag': '12345',
                           'Access-Control-Allow-Origin': '*'
                         }).status('200').send(result);
+                     var user = {
+                          'id': req.user._id,
+                        'email'   : req.user.email,
+                        'mobile'   : req.user.mobileNumber,
+                        'userName'   : req.user.userName
+                      }
+                      var ticket = {
+                          id: result._id,
+                          subject: result.subject,
+                          ticketNum: result.ticketNum
+                      }
+                       eventEmitter.emit('save activity', req.user._id, 'updated ticket', result._id);
               }
          });
     });
@@ -410,12 +558,43 @@ module.exports.controllerFunction = function(app){
                     var myResponse = responseGenerator.generate(true,"some error"+err,500,null);
                     res.send(myResponse);
                   }else{
+                    ticketReply.remove({'parent_id': req.params.ticketId}, function(err, result){
+                        if(err){
+                                console.log('An error occured while updating ticket.'+req.params.ticketId+' Error:-'+err);
+                                var myResponse = responseGenerator.generate(true,"some error"+err,500,null);
+                                res.send(myResponse);
+                              }else{
+                                 eventEmitter.emit('save activity', req.user._id, 'deleted reply on ticket', req.params.ticketId);
+                                 res.set({
+                                    'Content-Type': 'application/json',
+                                    'ETag': '12345',
+                                    'Access-Control-Allow-Origin': '*'
+                                  }).status('200').send(result);
+                          }
+                    });
+                     /*res.set({
+                        'Content-Type': 'application/json',
+                        'ETag': '12345',
+                        'Access-Control-Allow-Origin': '*'
+                      }).status('200').send(result);*/
+              }
+         });
+    });
+
+    ticketRouter.post('/delete/reply/:replyId', authenticate.authenticate, function(req, res){
+         ticketReply.remove({'_id': req.params.replyId}, function(err, result){
+              if(err){
+                    console.log('An error occured while updating ticket.'+req.params.ticketId+' Error:-'+err);
+                    var myResponse = responseGenerator.generate(true,"some error"+err,500,null);
+                    res.send(myResponse);
+                  }else{
 
                      res.set({
                         'Content-Type': 'application/json',
                         'ETag': '12345',
                         'Access-Control-Allow-Origin': '*'
                       }).status('200').send(result);
+                     eventEmitter.emit('save activity', req.user._id, 'deleted reply on ticket', req.params.ticketId);
               }
          });
     });
@@ -515,6 +694,18 @@ module.exports.controllerFunction = function(app){
                               //recepient.push(createdBy.email);
                               //eventEmitter.emit('add follower',req.params.ticketId, createdBy);
                               //eventEmitter.emit('send email', recepient, subject, req.params.ticketId, text);
+                            var user = {
+                                'id': req.user._id,
+                              'email'   : req.user.email,
+                              'mobile'   : req.user.mobileNumber,
+                              'userName'   : req.user.userName
+                            }
+                            var ticket = {
+                                id: result._id,
+                                subject: result.subject,
+                                ticketNum: result.ticketNum
+                            }
+                             eventEmitter.emit('save activity', req.user._id, 'replied on ticket', req.params.ticketId);
                         }
                   });
 

@@ -50,6 +50,14 @@ ticketApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvide
         controller      : 'dashboardController',
         controllerAs    : 'dashboard'
      })
+     
+     .state('dashboard.profile',{
+
+        url: '/profile',
+        templateUrl     : 'views/userdetail.view.html',
+        controller      : 'userDetail',
+        controllerAs    : 'main'
+     })
 
      .state('dashboard.home',{
 

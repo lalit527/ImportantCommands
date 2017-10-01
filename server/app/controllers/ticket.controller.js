@@ -123,13 +123,13 @@ module.exports.controllerFunction = function(app){
          });
     });
 
-    ticketRouter.get('/allacitvities/user/:userId/:pageNum', authenticate.authenticate, function(req, res){
+    ticketRouter.get('/allacitvities/user/:user/:pageNum', authenticate.authenticate, function(req, res){
          console.log(req.params.pageNum);
          console.log(req.params.userId);
          var count = parseInt(req.params.pageNum) + 1;
          var skipData = parseInt(req.params.pageNum) - 1;
          skipData *=  10;  
-         userActivity.find({'creator.id':req.params.userId}).skip(skipData).sort('-createdon').limit(10).exec(function(err, result){
+         userActivity.find({'creator.userName':req.params.user}).skip(skipData).sort('-createdon').limit(10).exec(function(err, result){
             if(err){
               console.log('An error occured while retrieving all supplier product. Error:-'+err);
               var myResponse = responseGenerator.generate(true,"some error"+err,500,null);

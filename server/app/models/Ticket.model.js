@@ -162,7 +162,7 @@ ticketSchema.pre('save', function(next){
    
 });
 
-ticketSchema.pre('findOneAndUpdate', function(next){
+/*ticketSchema.pre('findOneAndUpdate', function(next){
     var ticket = this;
     console.log('this'+ticket.agent);
     if(ticket.agent){
@@ -177,6 +177,6 @@ ticketSchema.pre('findOneAndUpdate', function(next){
     	next();
     }
    	
-});
+});*/
 
 mongoose.model('Ticket', ticketSchema);

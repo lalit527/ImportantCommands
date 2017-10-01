@@ -1,13 +1,58 @@
-ticketApp.controller('allTicketController', ['$http',  'getAllDataService', 'NgTableParams', '$location', function($http, 
- getAllDataService, NgTableParams, $location){
+ticketApp.controller('allTicketController', ['$http',  'getAllDataService', 'NgTableParams', '$location', 'getUserData', function($http, 
+ getAllDataService, NgTableParams, $location, getUserData){
 	  var main = this;
 	
     main.allTickets = [];
     main.ticket = 1;
     main.ticketArr = [];
+    main.allAgents = ["ALL"];
+    main.agent = "ALL";
+    main.allUsers = ["ALL"];
+    main.agent = "ALL";
+    main.allCustomers = ["ALL"];
+    main.agent = "ALL";
+    main.craetedBy = ['ALL', 'ME', 'CUSTOMER', 'ADMIN'];
+    main.creator = "ALL";
+    main.dueByData = ['ALL', 'Today', 'Tomorrow', 'Overdue', 'ThisWeek'];
+    main.dueBy = "ALL";
+    main.typeData = ['ALL', 'Incident', 'Question', 'Issue'];
+    main.type = "ALL";
+    main.statusArr = ["ALL", "Open","Pending","Resolved", "Closed", "Progressing"];
+    main.status = "ALL";
+    main.priorityArr = ["ALL", "Low","Medium","Critical"];
+    main.priority = "ALL";
+
+ 
     /*var ticket = getAllTicketService.getAllTicketData(1).then(function(result){
     	
     });*/
+
+    getUserData.getAllAgents().then(function(response){
+             main.userData = response;
+             //console.log(main.userData);
+          for(var indx in main.userData){
+             //console.log(main.userData[indx]);
+               main.allAgents.push(main.userData[indx].email);
+          }
+    });
+
+    getUserData.getAllUsers().then(function(response){
+             main.userData = response;
+             //console.log(main.userData);
+          for(var indx in main.userData){
+             //console.log(main.userData[indx]);
+               main.allUsers.push(main.userData[indx].email);
+          }
+    });
+
+    getUserData.getAllCustomers().then(function(response){
+             main.userData = response;
+             //console.log(main.userData);
+          for(var indx in main.userData){
+             //console.log(main.userData[indx]);
+               main.allCustomers.push(main.userData[indx].email);
+          }
+    });
     var ticketFunc = function(ticket){
     getAllDataService.getAllTicket(ticket).then(function successCallback(response){
 
@@ -20,6 +65,7 @@ ticketApp.controller('allTicketController', ['$http',  'getAllDataService', 'NgT
                           "status" :  response.data[indx].status,
                           "priority" :  response.data[indx].priority,
                           "agent" :  response.data[indx].agent,
+                          "dueBy" : response.data[indx].dueBy,
                           "description" :  response.data[indx].description,
                           "createdOn" : response.data[indx].createdOn,
                           "ticketNum" : response.data[indx].ticketNum,

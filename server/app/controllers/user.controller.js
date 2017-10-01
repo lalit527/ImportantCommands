@@ -40,6 +40,46 @@ module.exports.controllerFunction = function(app){
          });
      });
 
+     userRouter.get('/getallcustomers',  authenticate.authenticate, function(req, res){
+         userModel.find({'admin': 'N'}, function(err, result){
+              if(err){
+                 res.set({
+                        'Content-Type': 'text/plain',
+                        'Content-Length': '123',
+                        'ETag': '12345',
+                        'Access-Control-Allow-Origin': '*'
+                      }).status(404).send(err);
+              }else{
+                 res.set({
+                        'Content-Type': 'text/plain',
+                        'Content-Length': '123',
+                        'ETag': '12345',
+                        'Access-Control-Allow-Origin': '*'
+                      }).status(200).send(result);
+              }
+         });
+     });
+
+     userRouter.get('/getallagents',  authenticate.authenticate, function(req, res){
+         userModel.find({'admin': 'Y'}, function(err, result){
+              if(err){
+                 res.set({
+                        'Content-Type': 'text/plain',
+                        'Content-Length': '123',
+                        'ETag': '12345',
+                        'Access-Control-Allow-Origin': '*'
+                      }).status(404).send(err);
+              }else{
+                 res.set({
+                        'Content-Type': 'text/plain',
+                        'Content-Length': '123',
+                        'ETag': '12345',
+                        'Access-Control-Allow-Origin': '*'
+                      }).status(200).send(result);
+              }
+         });
+     });
+
      userRouter.post('/login',  function(req, res){
         userModel.findByCredentials(req.body.email, req.body.psw).then(function(result){
              console.log('C'+result);
@@ -71,6 +111,13 @@ module.exports.controllerFunction = function(app){
         });
     });
 		
+    userRouter.post('/logout', authenticate.authenticate, function(req, res){
+       
+        userModel.findOneAndUpdate({'_id': req.user._id}, {$pull: {'tokens': {'token':req.token}}}, {multi: true},function(req, result){
+            console.log(result);
+            res.send({result: result});
+        });
+    });
 
      userRouter.post('/signup', function(req, res){
           console.log(JSON.stringify(req.body));

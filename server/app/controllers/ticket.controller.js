@@ -91,12 +91,62 @@ module.exports.controllerFunction = function(app){
          
      });
     
+
     ticketRouter.get('/check/test/:id', function(req, res){
           userModel.find({'userName': req.params.id}).count().exec(function(err, result){
             res.send({'result': result});
           });
     });
 
+    ticketRouter.get('/allacitvities/ticket/:ticketId/:pageNum', authenticate.authenticate, function(req, res){
+         console.log('1'+req.params.pageNum);
+         console.log('1'+req.params.ticketId);
+         var count = parseInt(req.params.pageNum) + 1;
+         var skipData = parseInt(req.params.pageNum) - 1;
+         skipData *=  10;  
+         userActivity.find({'ticket.id':req.params.ticketId}).skip(skipData).sort('-createdon').limit(10).exec(function(err, result){
+            if(err){
+              console.log('An error occured while retrieving all supplier product. Error:-'+err);
+              var myResponse = responseGenerator.generate(true,"some error"+err,500,null);
+              res.send(myResponse);
+            }else{
+              if(result.length === 0){
+                count = undefined;
+              }
+              res.set({
+                'Content-Type': 'application/json',
+                'ETag': '12345',
+                'Access-Control-Allow-Origin': '*',
+                'link':  count
+              }).status('200').send(result);
+            }
+         });
+    });
+
+    ticketRouter.get('/allacitvities/user/:userId/:pageNum', authenticate.authenticate, function(req, res){
+         console.log(req.params.pageNum);
+         console.log(req.params.userId);
+         var count = parseInt(req.params.pageNum) + 1;
+         var skipData = parseInt(req.params.pageNum) - 1;
+         skipData *=  10;  
+         userActivity.find({'creator.id':req.params.userId}).skip(skipData).sort('-createdon').limit(10).exec(function(err, result){
+            if(err){
+              console.log('An error occured while retrieving all supplier product. Error:-'+err);
+              var myResponse = responseGenerator.generate(true,"some error"+err,500,null);
+              res.send(myResponse);
+            }else{
+              if(result.length === 0){
+                count = undefined;
+              }
+              res.set({
+                'Content-Type': 'application/json',
+                'ETag': '12345',
+                'Access-Control-Allow-Origin': '*',
+                'link':  count
+              }).status('200').send(result);
+            }
+         });
+    });
 
     ticketRouter.get('/allacitvities/:pageNum', authenticate.authenticate, function(req, res){
          var count = parseInt(req.params.pageNum) + 1;
@@ -519,6 +569,8 @@ module.exports.controllerFunction = function(app){
 		
     ticketRouter.put('/update/:ticketId', authenticate.authenticate, function(req, res){
          var update = req.body;
+         console.log(req);
+         
          userTicket.findOneAndUpdate({'_id': req.params.ticketId}, {$set: {
                'status': req.body.status,
                'priority': req.body.priority,
@@ -582,7 +634,7 @@ module.exports.controllerFunction = function(app){
          });
     });
 
-    ticketRouter.post('/delete/reply/:replyId', authenticate.authenticate, function(req, res){
+    ticketRouter.post('/delete/:ticketId/reply/:replyId', authenticate.authenticate, function(req, res){
          ticketReply.remove({'_id': req.params.replyId}, function(err, result){
               if(err){
                     console.log('An error occured while updating ticket.'+req.params.ticketId+' Error:-'+err);

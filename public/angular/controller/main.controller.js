@@ -85,6 +85,9 @@ ticketApp.controller('mainController', ['$http', '$state', 'getAllDataService', 
                         }
                       }
                       $cookies.put('ensembleUser-auth', response.headers('x-auth'));
+                      $cookies.put('ensembleUser-email', response.data.email);
+                      $cookies.put('ensembleUser-user', response.data.userName);
+                      $cookies.put('ensembleUser-username', response.data.userName);
                       getUserData.setUser(response.data.email, response.data.userName);
                       $location.path('/dashboard/home');
                       main.loginFail = false;

@@ -3,36 +3,34 @@
   <div class="col-xs-3">
     <p>hello</p>
 
-    <div class="col-xs-12" style='margin-top: 20px;'>
-        <label><b>Assigned To:</b><select style='border-radius: 6px; width:100%' ng-model="dashboard.name" ng-options="x for x in dashboard.allAgent"></select></label>
-    </div>
+    <!-- <div class="col-xs-12" style='margin-top: 20px;'>
+        <label><b>Assigned To:</b><select style='border-radius: 6px; width:100%' ng-model="dashboard.agent" ng-options="x for x in dashboard.allAgents"></select></label>
+    </div> -->
 
-    <div class="col-xs-12"  style='margin-top: 20px;'>
-        <label><b>Group:</b><select style='border-radius: 6px;width:100%' ng-model="dashboard.groupname" ng-options="x for x in dashboard.group"></select></label>
-    </div>
+    
 
-    <div class="col-xs-12" style='margin-top: 20px;'>
-        <label><b>Created:</b><select style='border-radius: 6px; width:100%' ng-model="dashboard.name" ng-options="x for x in dashboard.allAgent"></select></label>
-    </div>
+    <!-- <div class="col-xs-12" style='margin-top: 20px;'>
+        <label><b>Created By:</b><select style='border-radius: 6px; width:100%' ng-model="dashboard.creator" ng-options="x for x in dashboard.craetedBy"></select></label>
+    </div> -->
 
     <div class="col-xs-12" style='margin-top: 20px;'>
-        <label><b>Due By:</b><select style='border-radius: 6px; width:100%' ng-model="dashboard.name" ng-options="x for x in dashboard.allAgent"></select></label>
+        <label><b>Due By:</b><select style='border-radius: 6px; width:100%' ng-model="dashboard.dueBy" ng-options="x for x in dashboard.dueByData"></select></label>
     </div>
 
-    <div class="col-xs-12" style='margin-top: 20px;'>
-        <label><b>Created By:</b><select style='border-radius: 6px; width:100%' ng-model="dashboard.name" ng-options="x for x in dashboard.allAgent"></select></label>
-    </div>
+    <!-- <div class="col-xs-12" style='margin-top: 20px;'>
+        <label><b>Created By:</b><select style='border-radius: 6px; width:100%' ng-model="dashboard.creator" ng-options="x for x in dashboard.craetedBy"></select></label>
+    </div> -->
 
     <div class="col-xs-12" style='margin-top: 20px;'>
-        <label><b>Status:</b><select style='border-radius: 6px; width:100%' ng-model="dashboard.name" ng-options="x for x in dashboard.allAgent"></select></label>
-    </div>
-
-    <div class="col-xs-12" style='margin-top: 20px;'>
-        <label><b>Priority:</b><select style='border-radius: 6px; width:100%' ng-model="dashboard.name" ng-options="x for x in dashboard.allAgent"></select></label>
+        <label><b>Status:</b><select style='border-radius: 6px; width:100%' ng-model="dashboard.status" ng-options="x for x in dashboard.statusArr"></select></label>
     </div>
 
     <div class="col-xs-12" style='margin-top: 20px;'>
-        <label><b>Type:</b><select style='border-radius: 6px; width:100%' ng-model="dashboard.name" ng-options="x for x in dashboard.allAgent"></select></label>
+        <label><b>Priority:</b><select style='border-radius: 6px; width:100%' ng-model="dashboard.priority" ng-options="x for x in dashboard.priorityArr"></select></label>
+    </div>
+
+    <div class="col-xs-12" style='margin-top: 20px;'>
+        <label><b>Type:</b><select style='border-radius: 6px; width:100%' ng-model="dashboard.type" ng-options="x for x in dashboard.typeData"></select></label>
     </div>
 
   </div>
@@ -45,7 +43,7 @@
         <label><b>Sort By:</b><select style='border-radius: 6px; width:100%' ng-model="dashboard.name" ng-options="x for x in dashboard.allAgent"></select></label>
     </div> -->
     
-    <div class="col-xs-12 all-ticket">
+    <div class="col-xs-12 all-ticket table-responsive">
     	<all-tickets></all-tickets>
     </div>
 

@@ -50,11 +50,11 @@
                 <ul class="primary-nav">
                     <!-- <li><a href="#/dashboard/home" data-target="#">Hi{{index.user.userName}}</a></li> -->
                     <li class="dropdown">
-                      <a class="dropdown-toggle" data-toggle="dropdown">Hi {{index.user.userName}}<span class="caret"></span></a>
+                      <a class="dropdown-toggle" data-toggle="dropdown">Hi {{index.user.user}}<span class="caret"></span></a>
                       <ul class="dropdown-menu">
                         <li><a href="#">Home Page</a></li>
                         <li><a href="#">Dashboard</a></li>
-                        <li><a href="#">Logout</a></li>                        
+                        <li><button ng-click="index.logoutUser()">Logout</button></li>                        
                       </ul>
                     </li>
                 </ul>
@@ -188,6 +188,9 @@ function closeNav() {
     <script type="text/javascript" src="angular/services/allRequest.service.js"></script>
     <script type="text/javascript" src="angular/services/allticket.service.js"></script>
     <script type="text/javascript" src="angular/services/user.service.js"></script>
+    <script type="text/javascript" src="angular/filter/arrayreverse.filter.js"></script>
+    <script type="text/javascript" src="angular/filter/dueby.filter.js"></script>
+</body>
 </body>
 
 </html>

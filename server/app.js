@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var currentPath = require('./library/getrootpath');
+var http = require('http').Server(app);
 //var auth = require("./middlewares/auth");
 var path = require ('path');
 var multer = require('multer');
@@ -28,11 +29,12 @@ app.use(session({
 	cookie: {secure: false}
 }));
 
-app.use(express.static(path.resolve(__dirname,'./../public')));
+app.use('/',express.static(path.resolve(__dirname,'./../public')));
 
-/*app.get('/', function(req, res){
-      res.sendFile(__dirname + '../public/index.html');
-});*/
+app.get('/', function(req, res){
+      //res.sendFile(__dirname + './../public/index.html');
+      res.sendFile(__dirname + './../public/index.html');
+});
 currentPath.setRootDir(path.resolve(__dirname));
 var connection = require('./config/dbconnection');
 
@@ -51,6 +53,13 @@ fs.readdirSync('./app/controllers').forEach(function(file){
      }
 });
 
-app.listen('3000', function(){
+
+
+var server = app.listen('3000', function(){
 	console.log('listening on 3000');
 });
+
+var io = require('socket.io').listen(server);
+
+var route = require('./app/chat/chat.controller');
+route.controllerFunction(app, io);

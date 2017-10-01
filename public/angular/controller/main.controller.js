@@ -1,4 +1,4 @@
-ticketApp.controller('mainController', ['$http', '$state', 'getAllDataService', '$location', '$cookies', 'getUserData', function($http, $state, getAllDataService, $location, $cookies, getUserData){
+ticketApp.controller('mainController', ['$http', '$state', 'getAllDataService', '$location', '$cookies', 'getUserData', 'socket', function($http, $state, getAllDataService, $location, $cookies, getUserData, socket){
 	  var main = this;
 	  main.formData = {};
     main.adminData = {};
@@ -85,12 +85,24 @@ ticketApp.controller('mainController', ['$http', '$state', 'getAllDataService', 
                         }
                       }
                       $cookies.put('ensembleUser-auth', response.headers('x-auth'));
+                      
                       $cookies.put('ensembleUser-email', response.data.email);
                       $cookies.put('ensembleUser-user', response.data.userName);
                       $cookies.put('ensembleUser-username', response.data.userName);
-                      getUserData.setUser(response.data.email, response.data.userName);
-                      $location.path('/dashboard/home');
-                      main.loginFail = false;
+                      if(response.headers('x-admin')){
+                        $cookies.put('ensembleUser-admin', response.headers('x-admin'));
+                        socket.emit('admin', response.data.userName, response.headers('x-admin'));
+
+                        getUserData.setUser(response.data.email, response.data.userName);
+                        $location.path('/dashboard/home');
+                        main.loginFail = false;
+                      }else{
+                         socket.emit('user', response.data.userName);
+                         $location.path('/support/home');
+                         main.loginFail = false;
+                      }
+                      
+                      
                   }
                   
            });

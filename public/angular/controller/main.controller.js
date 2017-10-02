@@ -1,4 +1,4 @@
-ticketApp.controller('mainController', ['$http', '$state', 'getAllDataService', '$location', '$cookies', 'getUserData', 'socket', function($http, $state, getAllDataService, $location, $cookies, getUserData, socket){
+ticketApp.controller('mainController', ['$http', '$state', 'getAllDataService', '$location', '$cookies', 'getUserData', 'socket', '$scope', function($http, $state, getAllDataService, $location, $cookies, getUserData, socket, $scope){
 	  var main = this;
 	  main.formData = {};
     main.adminData = {};
@@ -57,11 +57,32 @@ ticketApp.controller('mainController', ['$http', '$state', 'getAllDataService', 
                  
                   $location.path('/dashboard/home');
                    main.loginFail = false;
+                  $cookies.put('ensembleUser-auth', response.headers('x-auth'));
                   
+                  $cookies.put('ensembleUser-email', response.data.email);
+                  $cookies.put('ensembleUser-user', response.data.userName);
+                  $cookies.put('ensembleUser-username', response.data.userName);
+                  if(response.headers('x-admin')){
+                    $cookies.put('ensembleUser-admin', response.headers('x-admin'));
+                    socket.emit('admin', response.data.userName, response.headers('x-admin'));
+                    $scope.$parent.index.user.user = response.data.userName;
+                    getUserData.setUser(response.data.email, response.data.userName);
+                    $location.path('/dashboard/home');
+                    main.loginFail = false;
+                  }else{
+                     socket.emit('user', response.data.userName);
+                     $scope.$parent.index.user.user = response.data.userName;
+                     $location.path('/support/home');
+                     main.loginFail = false;
+                  }
            });
        }
 
        main.login = function(){
+           console.log($scope.$parent.index.showLogin);
+           $scope.$parent.index.showLogin = false;
+           $scope.$parent.index.showUser = true;
+
            getAllDataService.loginUser(main.loginData).then(function successCallback(response){
                   if(response.data.error === true){
                      alert(response.data.message);
@@ -92,12 +113,13 @@ ticketApp.controller('mainController', ['$http', '$state', 'getAllDataService', 
                       if(response.headers('x-admin')){
                         $cookies.put('ensembleUser-admin', response.headers('x-admin'));
                         socket.emit('admin', response.data.userName, response.headers('x-admin'));
-
+                        $scope.$parent.index.user.user = response.data.userName;
                         getUserData.setUser(response.data.email, response.data.userName);
                         $location.path('/dashboard/home');
                         main.loginFail = false;
                       }else{
                          socket.emit('user', response.data.userName);
+                         $scope.$parent.index.user.user = response.data.userName;
                          $location.path('/support/home');
                          main.loginFail = false;
                       }

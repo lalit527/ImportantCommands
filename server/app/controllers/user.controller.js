@@ -20,6 +20,12 @@ module.exports.controllerFunction = function(app){
           });
      });
 
+      userRouter.get('/check/username/:user', function(req, res){
+          userModel.find({'userName': req.params.user}).count().exec(function(err, result){
+            res.send({'result': result});
+          });
+     });
+
      userRouter.get('/getallusers',  authenticate.authenticate, function(req, res){
          userModel.find({}, function(err, result){
               if(err){
@@ -82,7 +88,6 @@ module.exports.controllerFunction = function(app){
 
      userRouter.post('/login',  function(req, res){
         userModel.findByCredentials(req.body.email, req.body.psw).then(function(result){
-             console.log('C'+result);
              return result.generateAuthToken().then(function(token){
                 console.log(token);
                 if(result.admin === 'Y'){
@@ -121,6 +126,9 @@ module.exports.controllerFunction = function(app){
 
      userRouter.post('/signup', function(req, res){
           console.log(JSON.stringify(req.body));
+          if(!req.body.fname || !req.body.lname || !req.body.email || !req.body.mobile || !req.body.psw){
+
+          }
           var newUser = new userModel({
                 userName            : req.body.fname+''+req.body.lname,
                 firstName           : req.body.fname,

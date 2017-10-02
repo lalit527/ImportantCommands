@@ -9,7 +9,7 @@ ticketApp.controller('dashboardController', ['$http', 'getAllDataService', 'getA
     main.priority = ["Low","Medium","Critical"];
     main.allAgents = [];
     main.fileLength = 0;
-    getUserData.getAllUsers().then(function(response){
+    getUserData.getAllAgents().then(function(response){
              main.userData = response;
              //console.log(main.userData);
           for(var indx in main.userData){
@@ -21,6 +21,15 @@ ticketApp.controller('dashboardController', ['$http', 'getAllDataService', 'getA
 
     main.formInput = {};
 
+    var formdata = new FormData();
+    main.getTheFiles = function ($files) {
+        main.fileLength = $files.length;
+        console.log('leng'+$files.length);
+        angular.forEach($files, function (value, key) {
+            formdata.append(key, value);
+        });
+    };
+
     main.createTicket = function(){
         getAllDataService.createTicket(main.ticketData).then(function successCallback(response){
               if(response.data.error === true){
@@ -28,9 +37,11 @@ ticketApp.controller('dashboardController', ['$http', 'getAllDataService', 'getA
                   main.loginFail = true;
                   main.loginFailMsg = response.data.message;
               }else{
-                  console.log(response);
+                  var response = response.data;
+                  //console.log(response);
                   if(main.fileLength > 0){
-                     main.loadFile(response.data._id).then(function successCallback(response){
+                    //var formdata = new FormData();
+                     getAllDataService.loadFile(formdata, response.data._id).then(function successCallback(response){
                             if(response.data.error === true){
                                alert(response.data.message);
                                 //main.loginFail = true;
@@ -53,25 +64,9 @@ ticketApp.controller('dashboardController', ['$http', 'getAllDataService', 'getA
     }
 
 
-    var formdata = new FormData();
-    main.getTheFiles = function ($files) {
-        main.fileLength = $files.length;
-        console.log('leng'+$files.length);
-        angular.forEach($files, function (value, key) {
-            formdata.append(key, value);
-        });
-    };
     
-    main.loadFile = function(ticketId){
-
-      console.log(ticketId);
-      return $http({
-          method: 'POST',
-          url   :  'http://localhost:3000/ticket/file/upload/'+ticketId,
-          data    : formdata,  // pass in data as strings
-          headers : { 'Content-Type': undefined, 'x-auth': $cookies.get('ensembleUser-auth') } 
-      })
-  }
+    
+    
    
 
 }]);

@@ -19,9 +19,14 @@
       </div>
       <div class="form-group required">
             <label for="input-money" class="control-label">Email</label>
-            <input type="email" class="form-control mask-money" placeholder="Enter Email" name="email" ng-model="main.formData.email" ng-blur="main.checkEmail()" ng-focus="main.clearEmailSpan()" required>
+            <input type="text" class="form-control mask-money" placeholder="Enter Email" name="email" ng-model="main.formData.email" ng-blur="main.checkEmail()" ng-focus="main.clearEmailSpan()" required>
             <span ng-show="registrForm.email.$touched && registrForm.email.$invalid">Email is invalid.</span>
             <span ng-show="main.dupemail">Email is already resgistered.</span>
+      </div>
+      <div class="form-group required">
+            <label for="input-money" class="control-label">User Name</label>
+            <input type="email" class="form-control mask-money" placeholder="User Name" name="username" ng-model="main.formData.username" ng-blur="main.checkUser()" ng-focus="main.clearUserSpan()" required>
+            <span ng-show="main.dupname">User Name already taken.</span>
       </div>
       <div class="form-group required">
             <label for="input-money" class="control-label">Mobile</label>

@@ -9,10 +9,10 @@ exports.mailFunc = function(subject, recepient, text, fn){
 	  }
 	});
   
-  for(var user=0; user< recepient.length; user++){
+  //for(var user=0; user< recepient.length; user++){
       var mailOptions = {
               from: 'ensemble@no-reply.com',
-              to: recepient[user],
+              to: recepient,
               subject: subject,
               text: text
        };   
@@ -26,6 +26,6 @@ exports.mailFunc = function(subject, recepient, text, fn){
                 fn('Email sent: ' + info.response);
               }
        });
-  }
+  //}
     	
 }

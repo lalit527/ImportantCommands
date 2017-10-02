@@ -22,7 +22,7 @@ ticketApp.controller('allTicketController', ['$http',  'getAllDataService', 'NgT
     main.priorityArr = ["ALL", "Low","Medium","Critical"];
     main.priority = "ALL";
 
- 
+
     /*var ticket = getAllTicketService.getAllTicketData(1).then(function(result){
     	
     });*/
@@ -55,8 +55,17 @@ ticketApp.controller('allTicketController', ['$http',  'getAllDataService', 'NgT
     });
     var ticketFunc = function(ticket){
     getAllDataService.getAllTicket(ticket).then(function successCallback(response){
+                  //var response= response.data;
+                  //console.log(response);
+                  if(response.headers('link')){
 
-                  console.log(response);
+                        main.ticket = response.headers('link');
+                        //return deferred.promise;    
+                      }else{
+                        main.ticket = 0;
+                        //deferred.resolve(main.ticketArr);   
+                      }
+                  var response = response.data;
                   for(var indx in response.data){
                       var tmpObject = {
                           "requestor" :  response.data[indx].requestor,
@@ -73,14 +82,7 @@ ticketApp.controller('allTicketController', ['$http',  'getAllDataService', 'NgT
                       }
 
                      main.allTickets.push(tmpObject);
-                      if(response.headers('link')){
-
-                        main.ticket = response.headers('link');
-                        //return deferred.promise;    
-                      }else{
-                        main.ticket = 0;
-                        //deferred.resolve(main.ticketArr);   
-                      }
+                      
                       
                   }
                   //main.allTickets = result;

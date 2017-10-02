@@ -692,7 +692,7 @@ module.exports.controllerFunction = function(app){
          });
     });*/
 
-    ticketRouter.get('/getallreply/:ticketId', authenticate.authenticate, function(req, res){
+    /*ticketRouter.get('/getallreply/:ticketId', authenticate.authenticate, function(req, res){
            ticketReply.find({'parent_id': req.params.ticketId}, function(err, result){
                  if(err){
                     console.log('An error occured while updating ticket.'+req.params.ticketId+' Error:-'+err);
@@ -704,6 +704,86 @@ module.exports.controllerFunction = function(app){
                           'ETag': '12345',
                           'Access-Control-Allow-Origin': '*'
                         }).status('200').send(result);
+                 }
+           });    
+    });*/
+
+    ticketRouter.get('/getallreply/:ticketId', authenticate.authenticate, function(req, res){
+            var allData= {};
+           ticketReply.find({'parent_id': req.params.ticketId}, function(err, result){
+                 if(err){
+                    console.log('An error occured while updating ticket.'+req.params.ticketId+' Error:-'+err);
+                    var myResponse = responseGenerator.generate(true,"some error"+err,500,null);
+                    res.send(myResponse);
+                 }else{
+                    for(var indx in result){
+                            ticketFile.find({'parent_id': result[indx]._id}, function(err, data){
+                              console.log('file:-'+result[indx]._id);
+                                 if(err){
+                                     console.log('file Err:-'+err);
+                                     var myResponse = responseGenerator.generate(false,"success",200,result);
+                                      res.set({
+                                        'Content-Type': 'application/json',
+                                        'ETag': '12345',
+                                        'Access-Control-Allow-Origin': '*'
+                                      }).send(result);
+                                 }else{
+                                    result[indx].attachment = [];
+                                     for(var data in data){
+                                       if(data[data].filename){
+                                          result[indx].attachment.push(data[data]);
+                                       }
+                                        
+                                     }
+                                     result[indx].attachment.push(data);
+                                 }
+                            });
+                    }
+                    var myResponse = responseGenerator.generate(false,"success",200,result);
+                                res.set({
+                                  'Content-Type': 'application/json',
+                                  'ETag': '12345',
+                                  'Access-Control-Allow-Origin': '*'
+                                }).send(result);
+                     /*ticketFile.find({'parent_id': result._id}, function(err, data){
+                            if(err){
+                                 console.log('An error occured while retrieving ticket details. Error:-'+err);
+                                var myResponse = responseGenerator.generate(true,"some error"+err,500,null);
+                                res.set({
+                                  'Content-Type': 'application/json',
+                                  'ETag': '12345',
+                                  'Access-Control-Allow-Origin': '*'
+                                }).send(result);
+                              }else if(!data || data.length == 0 || data == undefined){
+                                  var myResponse = responseGenerator.generate(false,"success",200,result);
+                                  res.set({
+                                    'Content-Type': 'application/json',
+                                    'ETag': '12345',
+                                    'Access-Control-Allow-Origin': '*'
+                                  }).send(result);
+
+                            }else{
+                               result.attachment = [];
+                               for(var indx in data){
+                                 if(data[indx].filename){
+                                    result.attachment.push(data[indx]);
+                                 }
+                                  
+                               }
+                               result.attachment.push(data);
+                               var myResponse = responseGenerator.generate(false,"success",200,result);
+                                res.set({
+                                  'Content-Type': 'application/json',
+                                  'ETag': '12345',
+                                  'Access-Control-Allow-Origin': '*'
+                                }).send(result);
+                            }
+                     });*/
+                    /*res.set({
+                          'Content-Type': 'application/json',
+                          'ETag': '12345',
+                          'Access-Control-Allow-Origin': '*'
+                        }).status('200').send(result);*/
                  }
            });    
     });

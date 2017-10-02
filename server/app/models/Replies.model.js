@@ -20,6 +20,19 @@ var repliesSchema = new Schema({
     },
     createdon: {type: Date},
     notes: {type: String},
+    attachment:[
+    	{
+	
+		    
+		    originalname: {type: String},
+		    encoding: {type: String},
+		    mimetype: {type: String},
+		    destination: {type: String},
+		    filename: {type: String},
+		    path:{type: String},
+		    size:{type: String}
+		}
+    ],
     files:{}
 
 });
